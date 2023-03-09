@@ -26,8 +26,11 @@ public class EmployeeBook {
         employees[idCounter++] = newEmployee;
     }
 
-    public void deleteEmployee(int id) {
-        for (int i = 0; i < employees.length; i++) {
+    public void deleteEmployee(int id) throws Exception {
+        for (int i = 0; i < idCounter; i++) {
+            if (employees[i] == null) {
+                throw new Exception("Чтобы кого-то удалить, сначала кого-то нужно добавить. Удалять некого.");
+            }
             if (employees[i].getId() == id) {
                 System.out.println(employees[i].getFirstName() + " " + employees[i].getMiddleName() + " " +
                         employees[i].getLastName() + " удален");
@@ -58,9 +61,7 @@ public class EmployeeBook {
     public void printAllEmployees() {
         for (int i = 0; i < idCounter; i++) {
             Employee employee = employees[i];
-            System.out.println(employee.getLastName() + " " + employee.getMiddleName() + " " +
-                    employee.getFirstName() + ": " + employee.getSalary() + ", отдел: " +
-                    employee.getDept() + ", id: " + employee.getId());
+            printEmployeeInfo(employees[i]);
         }
     }
 
@@ -125,7 +126,7 @@ public class EmployeeBook {
          */
         for (int i = 0; i < arrDeptUnic.length; i++) {
             System.out.println();
-            System.out.println("Отдел № "+ arrDeptUnic[i] + ":");
+            System.out.println("Отдел № " + arrDeptUnic[i] + ":");
             for (int j = 0; j < arrDept.length; j++) {
                 if (employees[j].getDept() == arrDeptUnic[i]) {
                     System.out.println(" " + employees[j].getLastName() + " " +
@@ -144,13 +145,19 @@ public class EmployeeBook {
         }
     }
 
+    public static void printEmployeeInfo(Employee employee) {
+        System.out.println("id: " + employee.getId() + ", полное имя: " +
+                employee.getLastName() + " " + employee.getMiddleName() + " " +
+                employee.getFirstName() + ", зарплата: " +
+                new DecimalFormat("###,###.##").format(employee.getSalary()) +
+                " рублей, " + " отдел: " + employee.getDept());
+    }
+
     public void salaryLessThan(int lessThanThisNum) {
         int lessSalariesCounter = 0;
         for (int i = 0; i < idCounter; i++) {
             if (employees[i].getSalary() < lessThanThisNum) {
-                System.out.println("id: " + employees[i].getId() + ", полное имя: " +
-                        employees[i].getLastName() + " " + employees[i].getFirstName() + " " +
-                        employees[i].getMiddleName() + ", зарплата: " + employees[i].getSalary() + " рублей");
+                printEmployeeInfo(employees[i]);
                 lessSalariesCounter++;
             }
         }
@@ -163,9 +170,7 @@ public class EmployeeBook {
         int moreSalariesCounter = 0;
         for (int i = 0; i < idCounter; i++) {
             if (employees[i].getSalary() >= moreThanThisNum) {
-                System.out.println("id: " + employees[i].getId() + ", полное имя: " +
-                        employees[i].getLastName() + " " + employees[i].getFirstName() + " " +
-                        employees[i].getMiddleName() + ", зарплата: " + employees[i].getSalary() + " рублей");
+                printEmployeeInfo(employees[i]);
                 moreSalariesCounter++;
             }
         }
@@ -246,7 +251,10 @@ public class EmployeeBook {
         return manOrWomen;
     }
 
-    public int findEmployeesIdMinimalSalary() {
+    public int findEmployeesIdMinimalSalary() throws Exception {
+        if (employees == null) {
+            throw new Exception ("В базе отсутствуют сотрудники");
+        }
         int min = employees[0].getSalary();
         int idEmployee = 0;
         for (int i = 0; i < idCounter; i++) {
@@ -273,10 +281,7 @@ public class EmployeeBook {
     public void findAndPrintEmployeeById(int id) {
         for (int i = 0; i < idCounter; i++) {
             if (id == employees[i].getId()) {
-                System.out.println(employees[i].getLastName() + " " + employees[i].getMiddleName() + " " +
-                        employees[i].getFirstName() + ": " +
-                        new DecimalFormat("###,###").format(employees[i].getSalary()) + ", отдел: " +
-                        employees[i].getDept() + ", id: " + employees[i].getId());
+                printEmployeeInfo(employees[i]);
             }
         }
     }
